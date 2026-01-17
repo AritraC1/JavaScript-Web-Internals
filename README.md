@@ -6,6 +6,7 @@ This repository is a structured collection of **notes, experiments, diagrams, an
 
 The goal is not to learn frameworks, but to build **strong mental models** for:
 - JavaScript execution
+- JavaScript Fundamental
 - Asynchronous behavior
 - The event loop
 - HTTP and Node.js internals
