@@ -1,4 +1,4 @@
-# Notes JS Web Internals
+# JS Fundametals & Web Internals
 
 > **JavaScript Runtime, Event Loop, Async Patterns & Raw Node.js HTTP Server**
 
