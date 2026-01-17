@@ -130,15 +130,3 @@ Small scripts to observe real runtime behavior, such as:
 These are used to **validate assumptions**, not memorize rules.
 
 ---
-
-## 📚 References
-
-**Location:** `references/`
-
-Curated learning materials, including:
-- Namaste JavaScript
-- Philip Roberts — Event Loop
-- Hussein Nasser — Web & backend internals
-- MDN & javascript.info
-
----
