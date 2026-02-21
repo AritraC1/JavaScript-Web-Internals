@@ -15,5 +15,5 @@
 // }
 
 // Method 2 for export
-exports.add = (a, b) => a+b; // add is a property here - anonymous function - no name
-exports.sub = (a, b) => a-b;
+exports.add = (a, b) => a + b; // add is a property here - anonymous function - no name
+exports.sub = (a, b) => a - b;
