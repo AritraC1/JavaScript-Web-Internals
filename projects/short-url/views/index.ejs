@@ -345,6 +345,28 @@
           body: JSON.stringify({ url: longUrl })
         });
 
+        // If server didn't return JSON (for example an HTML error/redirect), handle gracefully
+        const contentType = response.headers.get("content-type") || "";
+        if (!response.ok) {
+          // If unauthorized, redirect to login
+          if (response.status === 401) return window.location.assign('/login');
+          const text = await response.text();
+          console.error('API error:', response.status, text.slice(0, 400));
+          alert('Server error. See console for details.');
+          return;
+        }
+
+        if (!contentType.includes('application/json')) {
+          const text = await response.text();
+          // If server returned an HTML page (likely a redirect to login), navigate the browser there
+          if (text && text.trim().startsWith('<!DOCTYPE')) {
+            return window.location.assign('/login');
+          }
+          console.error('Expected JSON but got:', text.slice(0, 400));
+          alert('Server returned unexpected response. See console for details.');
+          return;
+        }
+
         const data = await response.json();
 
         if (!data.id) {
@@ -395,9 +417,27 @@
 
       try {
         const res  = await fetch("/api/analytics/" + currentShortId);
+        const contentType = res.headers.get('content-type') || '';
+        if (!res.ok) {
+          const text = await res.text();
+          console.error('Analytics API error:', res.status, text.slice(0, 400));
+          body.innerHTML = `<div class="analytics-error">⚠ Failed to load analytics.</div>`;
+          return;
+        }
+        if (!contentType.includes('application/json')) {
+          const text = await res.text();
+          // Redirect to login if server returned HTML (likely a login page)
+          if (text && text.trim().startsWith('<!DOCTYPE')) {
+            return window.location.assign('/login');
+          }
+          console.error('Expected JSON but got:', text.slice(0,400));
+          body.innerHTML = `<div class="analytics-error">⚠ Failed to load analytics.</div>`;
+          return;
+        }
         const data = await res.json();
         renderAnalytics(data);
       } catch (err) {
+        console.error(err);
         body.innerHTML = `<div class="analytics-error">⚠ Failed to load analytics.</div>`;
       }
     }

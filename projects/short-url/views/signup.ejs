@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Short URL</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap"
+    rel="stylesheet">
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #f7f6f3;
+      --card-bg: #ffffff;
+      --border: rgba(0, 0, 0, 0.08);
+      --border-strong: rgba(0, 0, 0, 0.12);
+      --text: #111;
+      --muted: rgba(0, 0, 0, 0.38);
+      --accent: #16a34a;
+      --accent-bg: rgba(22, 163, 74, 0.07);
+      --accent-border: rgba(22, 163, 74, 0.2);
+      --input-bg: rgba(0, 0, 0, 0.025);
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.04);
+    }
+
+    html,
+    body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+    }
+
+    /* ── Subtle dot grid background ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(0, 0, 0, 0.08) 1px, transparent 1px);
+      background-size: 24px 24px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Page layout ── */
+    .page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Split layout ── */
+    .signup-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      max-width: 880px;
+      width: 100%;
+    }
+
+    @media (max-width: 680px) {
+      .signup-wrap {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .signup-left {
+        text-align: center;
+      }
+
+      .brand-badge {
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+
+    /* ── Left copy ── */
+    .signup-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent-bg);
+      border: 1px solid var(--accent-border);
+      border-radius: 999px;
+      padding: 5px 14px 5px 10px;
+      font-size: 12px;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+      margin-bottom: 28px;
+      width: fit-content;
+    }
+
+    .brand-badge .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.4;
+        transform: scale(0.7);
+      }
+    }
+
+    .signup-heading {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(48px, 7vw, 76px);
+      line-height: 0.92;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+
+    .signup-heading .light {
+      color: rgba(0, 0, 0, 0.25);
+    }
+
+    .signup-heading .headline-main {
+      color: var(--text);
+    }
+
+    .signup-subtext {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.65;
+      max-width: 300px;
+      margin-bottom: 36px;
+    }
+
+    .perks {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .perk {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: rgba(0, 0, 0, 0.45);
+    }
+
+    .perk-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 7px;
+      background: var(--accent-bg);
+      border: 1px solid var(--accent-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-strong);
+      border-radius: 20px;
+      padding: 36px;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    .card-tag {
+      display: inline-block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      background: rgba(0, 0, 0, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 4px 12px;
+      margin-bottom: 22px;
+    }
+
+    .card-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      letter-spacing: 0.5px;
+      margin-bottom: 5px;
+      color: var(--text);
+    }
+
+    .card-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 26px;
+    }
+
+    .card-subtitle a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .card-subtitle a:hover {
+      opacity: 0.7;
+    }
+
+    /* ── Form fields ── */
+    .field {
+      margin-bottom: 14px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 7px;
+    }
+
+    .input-wrap {
+      display: flex;
+      align-items: center;
+      background: var(--input-bg);
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      padding: 0 14px;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    }
+
+    .input-wrap:focus-within {
+      border-color: var(--accent);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+    }
+
+    .input-icon {
+      font-size: 14px;
+      flex-shrink: 0;
+      margin-right: 10px;
+      opacity: 0.35;
+    }
+
+    .input-wrap input {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 300;
+      padding: 12px 0;
+    }
+
+    .input-wrap input::placeholder {
+      color: rgba(0, 0, 0, 0.22);
+    }
+
+    /* Password strength bar */
+    .strength-bar {
+      display: flex;
+      gap: 4px;
+      margin-top: 8px;
+      height: 3px;
+    }
+
+    .strength-segment {
+      flex: 1;
+      border-radius: 2px;
+      background: rgba(0, 0, 0, 0.07);
+      transition: background 0.3s;
+    }
+
+    .strength-segment.active-weak {
+      background: #ef4444;
+    }
+
+    .strength-segment.active-fair {
+      background: #f59e0b;
+    }
+
+    .strength-segment.active-strong {
+      background: var(--accent);
+    }
+
+    /* ── Submit button ── */
+    .submit-btn {
+      width: 100%;
+      margin-top: 8px;
+      padding: 13px;
+      background: #111;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .submit-btn:hover {
+      background: #2a2a2a;
+      transform: translateY(-1px);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .submit-btn .arrow {
+      transition: transform 0.2s;
+    }
+
+    .submit-btn:hover .arrow {
+      transform: translateX(4px);
+    }
+
+    /* ── Divider ── */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .divider-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .divider-text {
+      font-size: 11px;
+      color: rgba(0, 0, 0, 0.2);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* ── Terms note ── */
+    .terms-note {
+      font-size: 11px;
+      color: rgba(0, 0, 0, 0.28);
+      text-align: center;
+      margin-top: 16px;
+      line-height: 1.7;
+    }
+
+    .terms-note a {
+      color: rgba(0, 0, 0, 0.45);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    /* ── Flash messages ── */
+    .flash {
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+
+    .flash.error {
+      background: rgba(239, 68, 68, 0.06);
+      border: 1px solid rgba(239, 68, 68, 0.18);
+      color: #dc2626;
+    }
+
+    .flash.success {
+      background: var(--accent-bg);
+      border: 1px solid var(--accent-border);
+      color: var(--accent);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="page">
+    <div class="signup-wrap">
+
+      <!-- LEFT ─ Branding & copy -->
+      <div class="signup-left">
+        <div class="brand-badge">
+          <span class="dot"></span>
+          Free Forever
+        </div>
+
+        <h1 class="signup-heading">
+          <span class="light">Join the</span><br>
+          <span class="headline-main">Smarter<br>Link<br>Network.</span>
+        </h1>
+
+        <p class="signup-subtext">
+          Shorten, track, and share your links with confidence.
+          Join millions of users who move fast and share smart.
+        </p>
+
+        <div class="perks">
+          <div class="perk">
+            <div class="perk-icon">⚡</div>
+            Instant link shortening, zero friction
+          </div>
+          <div class="perk">
+            <div class="perk-icon">📊</div>
+            Real-time click analytics & history
+          </div>
+          <div class="perk">
+            <div class="perk-icon">🔒</div>
+            Secure, private, always yours
+          </div>
+          <div class="perk">
+            <div class="perk-icon">🌍</div>
+            99.9% uptime across 180+ countries
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT ─ Signup card -->
+      <div class="card">
+        <span class="card-tag">✦ Create Account</span>
+
+        <div class="card-title">Get Started Free</div>
+        <div class="card-subtitle">
+          Already have an account? <a href="/login">Sign in →</a>
+        </div>
+
+        <% if (typeof error !=='undefined' && error) { %>
+          <div class="flash error">
+            <%= error %>
+          </div>
+          <% } %>
+            <% if (typeof success !=='undefined' && success) { %>
+              <div class="flash success">
+                <%= success %>
+              </div>
+              <% } %>
+
+                <form action="/user" method="POST" id="signupForm" novalidate>
+
+                  <div class="field">
+                    <label for="name">Full Name</label>
+                    <div class="input-wrap">
+                      <span class="input-icon">👤</span>
+                      <input id="name" name="name" type="text" placeholder="Jane Smith"
+                        value="<%= typeof formData !== 'undefined' ? formData.name || '' : '' %>" autocomplete="name"
+                        required>
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <label for="email">Email Address</label>
+                    <div class="input-wrap">
+                      <span class="input-icon">✉</span>
+                      <input id="email" name="email" type="email" placeholder="jane@example.com"
+                        value="<%= typeof formData !== 'undefined' ? formData.email || '' : '' %>" autocomplete="email"
+                        required>
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <label for="password">Password</label>
+                    <div class="input-wrap">
+                      <span class="input-icon">🔑</span>
+                      <input id="password" name="password" type="password" placeholder="Min. 8 characters"
+                        autocomplete="new-password" required oninput="updateStrength(this.value)">
+                    </div>
+                    <div class="strength-bar">
+                      <div class="strength-segment" id="s1"></div>
+                      <div class="strength-segment" id="s2"></div>
+                      <div class="strength-segment" id="s3"></div>
+                      <div class="strength-segment" id="s4"></div>
+                    </div>
+                  </div>
+
+                  <button type="submit" class="submit-btn" id="submitBtn">
+                    Create My Account <span class="arrow">→</span>
+                  </button>
+
+                </form>
+
+                <div class="divider">
+                  <div class="divider-line"></div>
+                  <div class="divider-text">secure signup</div>
+                  <div class="divider-line"></div>
+                </div>
+
+                <p class="terms-note">
+                  By creating an account you agree to our
+                  <a href="/terms">Terms of Service</a> and
+                  <a href="/privacy">Privacy Policy</a>.
+                  No credit card required.
+                </p>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function updateStrength(val) {
+      const segs = ['s1', 's2', 's3', 's4'].map(id => document.getElementById(id));
+      segs.forEach(s => s.className = 'strength-segment');
+      if (!val) return;
+      let score = 0;
+      if (val.length >= 8) score++;
+      if (/[A-Z]/.test(val)) score++;
+      if (/[0-9]/.test(val)) score++;
+      if (/[^A-Za-z0-9]/.test(val)) score++;
+      const cls = score <= 1 ? 'active-weak' : score <= 2 ? 'active-fair' : 'active-strong';
+      for (let i = 0; i < score; i++) segs[i].classList.add(cls);
+    }
+
+    document.getElementById('signupForm').addEventListener('submit', function (e) {
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      if (!name || !email || !password) { e.preventDefault(); alert('Please fill in all fields.'); return; }
+      if (password.length < 8) { e.preventDefault(); alert('Password must be at least 8 characters.'); return; }
+      const btn = document.getElementById('submitBtn');
+      btn.textContent = 'Creating account…';
+      btn.disabled = true;
+    });
+  </script>
+
+</body>
+
+</html>
